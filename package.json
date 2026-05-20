@@ -1,0 +1,21 @@
+{
+  "name": "reunion-bot",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "pnpm": {
+    "overrides": {
+      "@langchain/core": "^0.3.0"
+    }
+  }
+}

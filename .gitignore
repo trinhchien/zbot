@@ -1,0 +1,29 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+*.sql.gz
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local)
+postgres-data/
+redis-data/
+zalo-data/
+backup-data/
+
+# pnpm
+.pnpm-store/
+
+# Drizzle
+packages/db/migrations/meta/_journal.json
+
+# Implementation plan (not needed in production)
+implementation-plan/
