@@ -5,7 +5,11 @@
   "type": "module",
   "exports": {
     "./client": "./src/client.ts",
-    "./schema": "./src/schema/index.ts"
+    "./schema": "./src/schema/index.ts",
+    "./repositories/events": "./src/repositories/events.ts",
+    "./repositories/memory": "./src/repositories/memory.ts",
+    "./repositories/tasks": "./src/repositories/tasks.ts",
+    "./repositories/finance": "./src/repositories/finance.ts"
   },
   "scripts": {
     "build": "tsc",

@@ -39,10 +39,21 @@ export async function requireRole(userId: string, required: Role): Promise<void>
 }
 
 // === Tool registry ===
-// Stub tools for M0 — real implementations come in M2+
 import { memoryTools } from './memory';
+import { eventTools } from './events';
+import { rsvpTools } from './rsvp';
+import { taskTools } from './tasks';
+import { financeTools } from './finance';
+import { metaTools } from './meta';
 
-export const allTools: StructuredToolInterface[] = [...memoryTools];
+export const allTools: StructuredToolInterface[] = [
+  ...memoryTools,
+  ...eventTools,
+  ...rsvpTools,
+  ...taskTools,
+  ...financeTools,
+  ...metaTools,
+];
 
 export const toolsByName: Record<string, StructuredToolInterface> = Object.fromEntries(
   allTools.map((t) => [t.name, t]),

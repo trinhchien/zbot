@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose:*)",
+      "Bash(pnpm --filter @reunion/db run db:migrate)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion pnpm --filter @reunion/db run db:migrate)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 TELEGRAM_BOT_TOKEN=7628755476:AAFo2ZDB8Z8JqFgOm_sSa_dxmPSvVgkouUg TELEGRAM_BOT_USERNAME=ChientdBot TELEGRAM_ALLOWED_CHAT_IDS=5193462821 PRIMARY_EVENT_NAME=\"Họp lớp 10 năm 2/9\" PRIMARY_EVENT_DATE=2025-09-02T11:00:00+07:00 REDIS_PREFIX=reunion: LOG_LEVEL=info NODE_ENV=development pnpm --filter @reunion/bot-core dev)",
+      "Bash(echo \"bot-core PID: $!\")",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 TELEGRAM_BOT_TOKEN=7628755476:AAFo2ZDB8Z8JqFgOm_sSa_dxmPSvVgkouUg TELEGRAM_BOT_USERNAME=ChientdBot TELEGRAM_ALLOWED_CHAT_IDS=5193462821 PRIMARY_EVENT_NAME=\"Họp lớp 10 năm 2/9\" PRIMARY_EVENT_DATE=2025-09-02T11:00:00+07:00 REDIS_PREFIX=reunion: LOG_LEVEL=info NODE_ENV=development pnpm --filter @reunion/adapter-telegram dev)",
+      "Bash(echo \"adapter PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -I{} taskkill /PID {} /F)",
+      "Bash(taskkill:*)",
+      "Bash(cmd:*)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(grep -v \"^$\" /tmp/bot-core.log)",
+      "Bash(grep -v \"^$\" /tmp/adapter-telegram.log)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 pnpm --filter @reunion/bot-core typecheck)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 pnpm --filter @reunion/db typecheck)",
+      "Bash(pnpm --filter @reunion/db typecheck)",
+      "Bash(pnpm --filter @reunion/bot-core typecheck)"
+    ]
+  }
+}

@@ -3,9 +3,10 @@ import { db } from '@reunion/db/client';
 import { users, userIdentities, chatGroups, messages } from '@reunion/db/schema';
 import { eq } from 'drizzle-orm';
 import { logger } from '@reunion/shared/logger';
+import { getJobsQueue } from '@reunion/shared/queue';
 import { classify } from './classify';
-import { orchestrate } from './graph';
 import { handleCommand, isCommand } from '../handlers/commands';
+import { orchestrate } from './graph';
 
 export async function processInbound(msg: NormalizedMessage): Promise<void> {
   if (msg.isFromBot) return;
@@ -84,19 +85,28 @@ export async function processInbound(msg: NormalizedMessage): Promise<void> {
     return;
   }
 
-  // 5. Slash commands take priority
+  // 5. Enqueue background embedding for this message
+  const jobsQueue = getJobsQueue();
+  await jobsQueue.add(
+    'embed-batch',
+    { type: 'embed-batch', payload: { messageId: persisted.id } },
+    { jobId: `embed:${persisted.id}`, removeOnComplete: 500, removeOnFail: 1000 },
+  );
+
+  // 6. Slash commands take priority
   if (isCommand(msg.content.text)) {
     await handleCommand(msg, { chatGroupId: group.id, userId: identity.userId!, identityId: identity.id });
     return;
   }
 
-  // 6. Classify and dispatch
+  // 7. Classify and dispatch
   const tier = classify(msg);
   logger.debug({ tier, msgId: persisted.id }, 'Classified message');
 
   if (tier === 'store_only') return;
 
-  // Hand off to LangGraph orchestrator
+  // M2: Invoke LangGraph orchestration
+  logger.info({ tier, msgId: persisted.id }, 'Invoking LangGraph orchestration');
   await orchestrate({
     message: msg,
     persistedMessageId: persisted.id,

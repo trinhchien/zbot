@@ -14,9 +14,9 @@ export async function getCheckpointer(): Promise<PostgresSaver> {
     max: 5,
   });
 
-  // TODO(human): PostgresSaver constructor may differ in installed version.
-  // Check node_modules/@langchain/langgraph-checkpoint-postgres for actual API.
-  _checkpointer = new PostgresSaver(_pool);
+  // Constructor: PostgresSaver(pool, serde?, options?)
+  // Use the 'langgraph' schema created in infra/postgres/init.sql
+  _checkpointer = new PostgresSaver(_pool, undefined, { schema: 'langgraph' });
   await _checkpointer.setup();
   logger.info('LangGraph PostgresSaver initialized');
 

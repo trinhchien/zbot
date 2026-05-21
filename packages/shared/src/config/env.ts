@@ -12,7 +12,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().url(),
   REDIS_PREFIX: z.string().default('reunion:'),
 
-  GEMINI_API_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL_PRIMARY: z.string().default('gemini-2.5-flash'),
   GEMINI_MODEL_LITE: z.string().default('gemini-2.5-flash-lite'),
   GEMINI_MODEL_EMBED: z.string().default('text-embedding-004'),
