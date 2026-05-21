@@ -5,7 +5,8 @@ export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   canonicalName: text('canonical_name').notNull(),
   nickname: text('nickname'),
-  phone: text('phone'),
+  phone: text('phone').unique(),
+  phoneVerifiedAt: timestamp('phone_verified_at', { withTimezone: true }),
   email: text('email'),
   role: text('role', { enum: ['member', 'organizer', 'treasurer', 'admin'] })
     .notNull()
@@ -25,6 +26,7 @@ export const userIdentities = pgTable(
     platformDisplayName: text('platform_display_name'),
     platformUsername: text('platform_username'),
     linkedAt: timestamp('linked_at', { withTimezone: true }),
+    phoneVerifiedAt: timestamp('phone_verified_at', { withTimezone: true }),
     firstSeenAt: timestamp('first_seen_at', { withTimezone: true }).notNull().defaultNow(),
     lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
   },

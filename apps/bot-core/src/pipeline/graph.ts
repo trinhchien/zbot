@@ -18,6 +18,7 @@ import { users, userFacts, messages as messagesTable } from '@reunion/db/schema'
 import { eq, desc } from 'drizzle-orm';
 import { getOutboundQueue } from '@reunion/shared/queue';
 import { logger } from '@reunion/shared/logger';
+import { getTracer } from '../services/tracer';
 
 // ===== Custom state =====
 const GraphState = Annotation.Root({
@@ -143,6 +144,7 @@ export async function orchestrate(ctx: OrchestrationContext): Promise<void> {
   let finalText: string | undefined;
 
   try {
+    const tracer = getTracer();
     const result = await graph.invoke(
       {
         messages: [new SystemMessage(sys), new HumanMessage(ctx.message.content.text ?? '')],
@@ -157,6 +159,7 @@ export async function orchestrate(ctx: OrchestrationContext): Promise<void> {
       {
         configurable: { thread_id: threadId },
         recursionLimit: 12,
+        callbacks: tracer ? [tracer] : [],
       },
     );
 

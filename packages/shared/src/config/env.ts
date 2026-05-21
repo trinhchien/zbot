@@ -38,10 +38,10 @@ const envSchema = z.object({
   BACKUP_RCLONE_REMOTE: z.string().optional(),
   BACKUP_RETENTION_DAYS: z.coerce.number().default(30),
 
-  // LangSmith (optional)
-  LANGSMITH_TRACING: z.coerce.boolean().default(false),
-  LANGSMITH_API_KEY: z.string().optional(),
-  LANGSMITH_PROJECT: z.string().default('reunion-bot'),
+  // Langfuse tracing (optional — set both keys to enable)
+  LANGFUSE_PUBLIC_KEY: z.string().optional(),
+  LANGFUSE_SECRET_KEY: z.string().optional(),
+  LANGFUSE_HOST: z.string().default('https://cloud.langfuse.com'),
 });
 
 export const env = envSchema.parse(process.env);

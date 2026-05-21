@@ -38,6 +38,18 @@ export async function requireRole(userId: string, required: Role): Promise<void>
   }
 }
 
+export async function requireVerified(userId: string): Promise<void> {
+  const [u] = await db
+    .select({ phoneVerifiedAt: users.phoneVerifiedAt })
+    .from(users)
+    .where(eq(users.id, userId));
+  if (!u?.phoneVerifiedAt) {
+    throw new Error(
+      'Bạn cần xác thực số điện thoại trước khi thực hiện việc này.\n\n📱 Nhắn tin riêng cho bot và gõ /start để xác thực.',
+    );
+  }
+}
+
 // === Tool registry ===
 import { memoryTools } from './memory';
 import { eventTools } from './events';

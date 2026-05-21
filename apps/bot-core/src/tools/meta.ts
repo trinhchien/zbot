@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext } from './index';
+import { extractContext, requireVerified } from './index';
 import { db } from '@reunion/db/client';
 import { messages } from '@reunion/db/schema';
 import { users, userIdentities } from '@reunion/db/schema';
@@ -11,6 +11,7 @@ import { eq, desc, and } from 'drizzle-orm';
 export const summarizeConversationTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
 
     // Fetch recent messages with sender display names
     const rows = await db

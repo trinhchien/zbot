@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext } from './index';
+import { extractContext, requireVerified } from './index';
 import {
   createTask,
   assignTask,
@@ -49,6 +49,7 @@ const createTaskSchema = z.object({
 export const createTaskTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
 
     let eventId = input.eventId;
     if (!eventId) {
@@ -95,6 +96,7 @@ const assignTaskSchema = z.object({
 export const assignTaskTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const assigneeUserId = input.assigneeUserId ?? ctx.userId;
 
     const task = await getTaskById(input.taskId);
@@ -128,7 +130,9 @@ const updateTaskStatusSchema = z.object({
 });
 
 export const updateTaskStatusTool = tool(
-  async (input, _config) => {
+  async (input, config) => {
+    const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const task = await getTaskById(input.taskId);
     if (!task) return JSON.stringify({ ok: false, error: 'Không tìm thấy task này' });
 
@@ -167,6 +171,7 @@ const listTasksSchema = z.object({
 export const listTasksTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
 
     const rows = await listTasks({
       assigneeUserId: input.scope === 'mine' ? ctx.userId : undefined,

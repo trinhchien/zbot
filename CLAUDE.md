@@ -96,7 +96,10 @@ Inbound jobs use `jobId: "tg:{message_id}:{chat_id}"` for BullMQ-level deduplica
 ### DB Patterns
 
 - **Primary event**: always the latest by `created_at` (`getPrimaryEvent()`). Bootstrapped from `PRIMARY_EVENT_NAME` + `PRIMARY_EVENT_DATE` env vars on bot-core startup.
-- **Identity model**: `user_identities` (per-platform) → `users` (canonical). Auto-link on first message; cross-platform merge via `/link` + `/redeem`.
+- **Identity model**: `user_identities` (per-platform) → `users` (canonical). Auto-link on first message; phone verification merges cross-platform identities automatically; `/link` + `/redeem` is the fallback.
+- **Phone = canonical identity**: `users.phone` is UNIQUE. One user = one phone number. `phoneVerifiedAt` on both `users` and `user_identities` tracks verification status.
+- **Verification flow**: DM-only. User sends `/start` to bot in private chat → bot sends requestContact keyboard → user taps → `handlePhoneContact()` in preprocess pipeline. Never in group chat.
+- **Permission guards**: `requireRole(userId, required)` checks role level; `requireVerified(userId)` checks `phoneVerifiedAt IS NOT NULL`. Sensitive slash commands call `checkVerified()` before executing.
 - **Amount fields**: stored as `bigint` (integer VND, no decimals).
 - **Embeddings**: `vector(768)` columns on `messages` and `user_facts`; `embeddingStatus` enum tracks backfill state. Populated by `embed-batch` background job (M2+).
 - **New repositories**: add to `packages/db/src/repositories/`, export from there (not from schema).

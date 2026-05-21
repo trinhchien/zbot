@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext, requireRole } from './index';
+import { extractContext, requireRole, requireVerified } from './index';
 import {
   createCampaign,
   getCampaignById,
@@ -39,6 +39,7 @@ const createCampaignSchema = z.object({
 export const createContributionCampaignTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     await requireRole(ctx.userId, 'treasurer');
 
     let eventId = input.eventId;
@@ -100,6 +101,7 @@ const recordContributionSchema = z.object({
 export const recordContributionTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const targetUserId = input.userId ?? ctx.userId;
 
     let campaignId = input.campaignId;
@@ -147,6 +149,7 @@ const verifyContributionSchema = z.object({
 export const verifyContributionTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     await requireRole(ctx.userId, 'treasurer');
 
     const result = await verifyContribution({
@@ -187,7 +190,9 @@ const listContributionStatusSchema = z.object({
 });
 
 export const listContributionStatusTool = tool(
-  async (input, _config) => {
+  async (input, config) => {
+    const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     let campaignId = input.campaignId;
     let campaignName = '';
     let amountPerHead: number | null = null;
@@ -283,6 +288,7 @@ const recordExpenseSchema = z.object({
 export const recordExpenseTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     await requireRole(ctx.userId, 'organizer');
 
     let eventId = input.eventId;
@@ -319,7 +325,9 @@ export const recordExpenseTool = tool(
 // ===== financial_summary =====
 
 export const financialSummaryTool = tool(
-  async (_input, _config) => {
+  async (_input, config) => {
+    const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const event = await getPrimaryEvent();
     const campaign = await getLatestOpenCampaign(event?.id);
 

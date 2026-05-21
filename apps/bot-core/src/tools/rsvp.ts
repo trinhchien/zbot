@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext } from './index';
+import { extractContext, requireVerified } from './index';
 import {
   getPrimaryEvent,
   upsertRsvp,
@@ -30,6 +30,7 @@ const setRsvpSchema = z.object({
 export const setRsvpTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const targetUserId = input.userId ?? ctx.userId;
 
     const event = await getPrimaryEvent();
@@ -63,7 +64,9 @@ export const setRsvpTool = tool(
 // ===== list_rsvp =====
 
 export const listRsvpTool = tool(
-  async (_input, _config) => {
+  async (_input, config) => {
+    const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const event = await getPrimaryEvent();
     if (!event) return JSON.stringify({ ok: false, error: 'Chưa có sự kiện nào' });
 

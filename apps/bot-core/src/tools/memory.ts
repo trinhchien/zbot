@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext } from './index';
+import { extractContext, requireVerified } from './index';
 import { embed } from '../services/embedding';
 import {
   insertUserFact,
@@ -24,6 +24,7 @@ const rememberSchema = z.object({
 export const rememberUserFactTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const targetUserId = input.userId ?? ctx.userId;
 
     const [embedding] = await embed([input.fact]);
@@ -62,6 +63,7 @@ const recallSchema = z.object({
 export const recallUserInfoTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const targetUserId = input.userId ?? ctx.userId;
 
     let facts: Array<{ id: string; fact: string; category: string; confidence: number }>;
@@ -109,6 +111,7 @@ const searchSchema = z.object({
 export const searchPastMessagesTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
 
     const [embedding] = await embed([input.query]);
     if (!embedding || embedding.length === 0) {

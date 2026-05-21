@@ -6,6 +6,7 @@ import { logger } from '@reunion/shared/logger';
 import { getJobsQueue } from '@reunion/shared/queue';
 import { classify } from './classify';
 import { handleCommand, isCommand } from '../handlers/commands';
+import { handlePhoneContact } from '../handlers/verify';
 import { orchestrate } from './graph';
 
 export async function processInbound(msg: NormalizedMessage): Promise<void> {
@@ -92,6 +93,12 @@ export async function processInbound(msg: NormalizedMessage): Promise<void> {
     { type: 'embed-batch', payload: { messageId: persisted.id } },
     { jobId: `embed:${persisted.id}`, removeOnComplete: 500, removeOnFail: 1000 },
   );
+
+  // 5b. Contact message → phone verification flow
+  if (msg.content.contact) {
+    await handlePhoneContact(msg, { identityId: identity.id, userId: identity.userId! });
+    return;
+  }
 
   // 6. Slash commands take priority
   if (isCommand(msg.content.text)) {

@@ -15,6 +15,17 @@ import { getUserContributions, getLatestOpenCampaign } from '@reunion/db/reposit
 import { eq } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 
+async function checkVerified(userId: string): Promise<string | null> {
+  const [u] = await db
+    .select({ phoneVerifiedAt: users.phoneVerifiedAt })
+    .from(users)
+    .where(eq(users.id, userId));
+  if (!u?.phoneVerifiedAt) {
+    return '🔒 Tính năng này yêu cầu xác thực số điện thoại.\n\n📱 Nhắn tin riêng cho bot và gõ /start để xác thực (chỉ mất 30 giây).';
+  }
+  return null;
+}
+
 const COMMAND_PREFIX = '/';
 
 // Unambiguous alphabet for link codes (no 0/O/I/L)
@@ -49,33 +60,54 @@ export async function handleCommand(msg: NormalizedMessage, ctx: Ctx): Promise<v
         reply = await handleEvent();
         break;
 
-      case 'rsvp':
+      case 'rsvp': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleRsvp(ctx.userId, args);
         break;
+      }
 
-      case 'who':
+      case 'who': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleWho();
         break;
+      }
 
-      case 'mytasks':
+      case 'mytasks': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleMyTasks(ctx.userId);
         break;
+      }
 
-      case 'tasks':
+      case 'tasks': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleAllTasks();
         break;
+      }
 
-      case 'mydues':
+      case 'mydues': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleMyDues(ctx.userId);
         break;
+      }
 
-      case 'link':
+      case 'link': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleLink(ctx.userId);
         break;
+      }
 
-      case 'redeem':
+      case 'redeem': {
+        const notVerified = await checkVerified(ctx.userId);
+        if (notVerified) { reply = notVerified; break; }
         reply = await handleRedeem(ctx.userId, ctx.identityId, args);
         break;
+      }
 
       default:
         reply = `Không hiểu lệnh \`/${cmd}\`. Gõ /help để xem danh sách.`;

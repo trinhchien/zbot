@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { extractContext, requireRole } from './index';
+import { extractContext, requireRole, requireVerified } from './index';
 import {
   getPrimaryEvent,
   createEvent,
@@ -33,6 +33,7 @@ const createEventSchema = z.object({
 export const createEventTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     await requireRole(ctx.userId, 'organizer');
 
     const event = await createEvent({
@@ -73,6 +74,7 @@ const updateDecisionSchema = z.object({
 export const updateEventDecisionTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
 
     let eventId = input.eventId;
     if (!eventId) {
@@ -106,7 +108,9 @@ export const updateEventDecisionTool = tool(
 // ===== list_event_status =====
 
 export const listEventStatusTool = tool(
-  async (_input, _config) => {
+  async (_input, config) => {
+    const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     const event = await getPrimaryEvent();
     if (!event) return JSON.stringify({ ok: false, error: 'Chưa có sự kiện nào' });
 
@@ -160,6 +164,7 @@ const setEventStatusSchema = z.object({
 export const setEventStatusTool = tool(
   async (input, config) => {
     const ctx = extractContext(config!);
+    await requireVerified(ctx.userId);
     await requireRole(ctx.userId, 'organizer');
 
     let eventId = input.eventId;

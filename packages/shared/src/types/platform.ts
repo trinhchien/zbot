@@ -19,6 +19,11 @@ export interface NormalizedMessage {
     mentions: string[];
     mentionsByName: string[];
     botMentioned: boolean;
+    contact?: {
+      phone: string;
+      firstName: string;
+      lastName?: string;
+    };
   };
   timestamp: Date;
   isFromBot: boolean;

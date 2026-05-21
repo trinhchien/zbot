@@ -20,7 +20,11 @@
       "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 pnpm --filter @reunion/bot-core typecheck)",
       "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion REDIS_URL=redis://localhost:6379 pnpm --filter @reunion/db typecheck)",
       "Bash(pnpm --filter @reunion/db typecheck)",
-      "Bash(pnpm --filter @reunion/bot-core typecheck)"
+      "Bash(pnpm --filter @reunion/bot-core typecheck)",
+      "Bash(pnpm --filter @reunion/bot-core add langfuse-langchain)",
+      "Bash(pnpm --filter @reunion/shared typecheck)",
+      "Bash(pnpm:*)",
+      "Bash(grep:*)"
     ]
   }
 }

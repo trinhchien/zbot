@@ -96,7 +96,9 @@ DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion pnpm --filter @re
 | `PRIMARY_EVENT_DATE` | | Ngày giờ ISO 8601 (mặc định: `2025-09-02T11:00:00+07:00`) |
 | `GEMINI_DAILY_REQUEST_BUDGET` | | Giới hạn request/ngày model chính (mặc định: 200) |
 | `GEMINI_LITE_DAILY_BUDGET` | | Giới hạn request/ngày model lite (mặc định: 800) |
-| `LANGSMITH_TRACING` | | `true` để bật LangSmith tracing |
+| `LANGFUSE_PUBLIC_KEY` | | Bật Langfuse tracing (lấy tại cloud.langfuse.com) |
+| `LANGFUSE_SECRET_KEY` | | Cần kèm với PUBLIC_KEY |
+| `LANGFUSE_HOST` | | Mặc định `https://cloud.langfuse.com`, đổi nếu self-hosted |
 | `ZALO_ENABLED` | | `true` để bật Zalo adapter (M6) |
 
 ---
