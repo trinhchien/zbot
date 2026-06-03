@@ -24,7 +24,15 @@
       "Bash(pnpm --filter @reunion/bot-core add langfuse-langchain)",
       "Bash(pnpm --filter @reunion/shared typecheck)",
       "Bash(pnpm:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion pnpm --filter @reunion/db run db:generate)",
+      "Bash(mkdir -p /home/chientd6/Project/github/zbot/packages/db/migrations && DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion pnpm --filter @reunion/db run db:generate 2>&1)",
+      "Bash(DATABASE_URL=postgres://reunion:reunion@localhost:5432/reunion npx drizzle-kit generate)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat {} | grep -A 10 \"\\\\\"scripts\\\\\"\"')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('exports',{}\\), indent=2\\)\\)\")"
+    ],
+    "additionalDirectories": [
+      "/home/chientd6/Project/github/zbot/packages/db/migrations"
     ]
   }
 }

@@ -9,7 +9,8 @@
     "./repositories/events": "./src/repositories/events.ts",
     "./repositories/memory": "./src/repositories/memory.ts",
     "./repositories/tasks": "./src/repositories/tasks.ts",
-    "./repositories/finance": "./src/repositories/finance.ts"
+    "./repositories/finance": "./src/repositories/finance.ts",
+    "./migrate": "./src/migrate.ts"
   },
   "scripts": {
     "build": "tsc",

@@ -1,6 +1,6 @@
 {
-  "id": "59e015dc-4205-43c2-8ed8-308524ff408b",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ac1376e0-3efc-4300-858b-13ab1ac2efe1",
+  "prevId": "59e015dc-4205-43c2-8ed8-308524ff408b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -233,6 +233,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "phone_verified_at": {
+          "name": "phone_verified_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "first_seen_at": {
           "name": "first_seen_at",
           "type": "timestamp with time zone",
@@ -324,6 +330,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "phone_verified_at": {
+          "name": "phone_verified_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "email": {
           "name": "email",
           "type": "text",
@@ -362,7 +374,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_phone_unique": {
+          "name": "users_phone_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "phone"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

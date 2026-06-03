@@ -2,6 +2,7 @@ import { Worker } from 'bullmq';
 import { getRedisConnection, QUEUE_INBOUND, QUEUE_JOBS, type InboundJob, type BackgroundJob } from '@reunion/shared/queue';
 import { logger } from '@reunion/shared/logger';
 import { env } from '@reunion/shared/config/env';
+import { runMigrations } from '@reunion/db/migrate';
 import { db } from '@reunion/db/client';
 import { events, messages as messagesTable } from '@reunion/db/schema';
 import { eq } from 'drizzle-orm';
@@ -29,6 +30,10 @@ async function bootstrapPrimaryEvent() {
 }
 
 async function main() {
+  logger.info('Running DB migrations...');
+  await runMigrations(env.DATABASE_URL);
+  logger.info('Migrations applied');
+
   await bootstrapPrimaryEvent();
 
   // Inbound message worker
